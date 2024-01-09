@@ -1,0 +1,13 @@
+<div id="tasks_index">
+  <button hx-get="/tasks/new" hx-swap="#tasks_index" hx-push-url="/tasks/new">
+    New Task
+  </button>
+
+  <div>
+    {{ range .Tasks }}
+      <div>{{ .Title }}</div>
+      <div>{{ .Description }}</div>
+      <div>{{ .DoneAt }}</div>
+    {{ end }}
+  </div>
+</div>
