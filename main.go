@@ -4,9 +4,12 @@ import (
 	"database/sql"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/redirect"
 	"github.com/gofiber/template/html/v2"
+
 	"github.com/jswildcards/gotodo/middlewares"
 	"github.com/jswildcards/gotodo/models"
+
 	"gorm.io/gorm"
 )
 
@@ -19,9 +22,12 @@ func main() {
 
 	app.Use(middlewares.DatabaseMiddleware)
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.Render("index", nil)
-	})
+	app.Use(redirect.New(redirect.Config{
+		Rules: map[string]string{
+			"/": "/tasks",
+		},
+		StatusCode: 301,
+	}))
 
 	app.Get("/tasks", func(c *fiber.Ctx) error {
 		db, ok := c.Locals("db").(*gorm.DB)
@@ -35,13 +41,27 @@ func main() {
 		var tasks []models.Task
 		db.Find(&tasks)
 
-		return c.Render("tasks/index", fiber.Map{
+		template := "tasks/index"
+
+		if c.QueryBool("partial") {
+			return c.Render(template, fiber.Map{
+				"Tasks": tasks,
+			})
+		}
+
+		return c.Render(template, fiber.Map{
 			"Tasks": tasks,
-		})
+		}, "layout")
 	})
 
 	app.Get("/tasks/new", func(c *fiber.Ctx) error {
-		return c.Render("tasks/new", nil)
+		template := "tasks/new"
+
+		if c.QueryBool("partial") {
+			return c.Render(template, nil)
+		}
+
+		return c.Render(template, nil, "layout")
 	})
 
 	app.Post("/tasks/create", func(c *fiber.Ctx) error {

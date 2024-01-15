@@ -1,5 +1,7 @@
-<form hx-post="/tasks/create" hx-swap="outerHTML">
-  <input value="title" />
-  <input value="description" />
-  <button type="submit">Submit</button>
-</form>
+<div id="tasks_new">
+  <form hx-post="/tasks/create" hx-swap="outerHTML">
+    <input name="title" placeholder="title" />
+    <input name="description" placeholder="description" />
+    <button type="submit">Submit</button>
+  </form>
+</div>

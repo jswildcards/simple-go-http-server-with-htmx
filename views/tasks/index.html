@@ -1,13 +1,15 @@
 <div id="tasks_index">
-  <button hx-get="/tasks/new" hx-swap="#tasks_index" hx-push-url="/tasks/new">
+  <button hx-get="/tasks/new?partial=true" hx-target="#tasks_index" hx-swap="outerHTML" hx-push-url="/tasks/new">
     New Task
   </button>
 
   <div>
     {{ range .Tasks }}
-      <div>{{ .Title }}</div>
-      <div>{{ .Description }}</div>
-      <div>{{ .DoneAt }}</div>
+      <div>
+        <div>{{ .Title }}</div>
+        <div>{{ .Description.String }}</div>
+        <div>{{ .DoneAt.Int64 }}</div>
+      </div>
     {{ end }}
   </div>
 </div>
